@@ -79,7 +79,23 @@ public class Maze{
 		}
 	}
 
-	//public Tile getAdjacentTile(Tile tile, Direction direction){}
+	public Tile getAdjacentTile(Tile tile, Direction direction){
+		Maze.Coordinate currentCoord = this.getTileLocation(tile);
+		if (direction.equals(Direction.NORTH)) {
+			Maze.Coordinate newCoord = this.new Coordinate(currentCoord.getX(), currentCoord.getY()+1);
+			return this.getTileAtLocation(newCoord);
+		}
+		if (direction.equals(Direction.EAST)) {
+			Maze.Coordinate newCoord = this.new Coordinate(currentCoord.getX()+1, currentCoord.getY());
+			return this.getTileAtLocation(newCoord);
+		}
+		if (direction.equals(Direction.SOUTH)) {
+			Maze.Coordinate newCoord = this.new Coordinate(currentCoord.getX(), currentCoord.getY()-1);
+			return this.getTileAtLocation(newCoord);
+		}
+		Maze.Coordinate newCoord = this.new Coordinate(currentCoord.getX()-1, currentCoord.getY());
+		return this.getTileAtLocation(newCoord);
+	}
 
 	public Tile getEntrance()throws NoEntranceException {
 		if (entrance == null) throw new NoEntranceException("\nThere are no entrances in the maze");
@@ -91,9 +107,23 @@ public class Maze{
 		return exit;
 	}
 
-	//public Tile getTileAtLocation(Coordinate coord){}
+	public Tile getTileAtLocation(Coordinate coord){
+		return tiles.get(tiles.size()-1-coord.getY()).get(coord.getX());
+	}
 
-	//public Coordinate getTileLocation(Tile tile){}
+	public Coordinate getTileLocation(Tile tile){
+		int x, y;
+		x = y = 0;
+		for(int i = 0; i < tiles.size(); i++){
+            for(int j = 0; j < tiles.get(i).size(); j++){
+            	if (tiles.get(i).get(j) == tile){
+            		x = j;
+            		y = tiles.size() - 1 - i;
+            	}
+            }
+        }
+		return this.new Coordinate(x,y);
+	}
 
 	public List<List<Tile>> getTiles(){
 		return tiles;
@@ -118,10 +148,15 @@ public class Maze{
 	public String toString(){
 		String result = "";
         for(int i = 0; i < tiles.size(); i++){
+        	result += Integer.toString(tiles.size()-1-i) + "   ";
             for(int j = 0; j < tiles.get(i).size(); j++){
-                result += tiles.get(i).get(j);
+                result += tiles.get(i).get(j) + " ";
             }
             result += "\n";
+        }
+        result += "\n    ";
+        for(int j = 0; j < tiles.get(0).size(); j++){
+            result += Integer.toString(j) + " ";
         }
         return result;
 	}
@@ -145,7 +180,7 @@ public class Maze{
 		}
 
 		public String toString(){
-			return "(" + String.valueOf(x) + "," + String.valueOf(x) + ")";
+			return "(" + String.valueOf(x) + ", " + String.valueOf(y) + ")";
 		}
 	}
 
