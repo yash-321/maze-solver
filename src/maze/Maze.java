@@ -7,16 +7,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Class used to store the maze as a 2d arraylist of tiles
+ *  @author Yashpal Sangha
+ *  @version 29th April 2020
+ */
 public class Maze{
+	// attributes
 	private Tile entrance = null;
 	private Tile exit = null;
 	private List<List<Tile>> tiles;
 
+	/** Constructor initialises the empty tiles 2d arraylist
+	 */
 	private Maze(){
 		tiles = new ArrayList<List<Tile>>();
 	}
 
-	public static Maze fromTxt(String file) throws InvalidMazeException{
+	/** Creates maze object from a text file
+	 *  @param 	file: The path of the file containing the maze
+	 *  @return Returns the maze object that was made from the text file
+	 */
+	public static Maze fromTxt(String file) throws InvalidMazeException, NoEntranceException, NoExitException, RaggedMazeException{
 		String line;
 		Maze maze = new Maze();
 		try(
@@ -60,16 +71,19 @@ public class Maze{
 			throw new InvalidMazeException("\nThere are multiple exits in the maze");
 		}catch(NoEntranceException e) {
 			System.out.println("\nThere are no entrances in the maze");
-			throw new InvalidMazeException("\nThere are no entrances in the maze");
+			throw new NoEntranceException("\nThere are no entrances in the maze");
 		}catch(NoExitException e) {
 			System.out.println("\nThere are no exits in the maze");
-			throw new InvalidMazeException("\nThere are no exits in the maze");
+			throw new NoExitException("\nThere are no exits in the maze");
 		}catch(RaggedMazeException e) {
 			System.out.println("\nThe maze is ragged");
-			throw new InvalidMazeException("\nThe maze is ragged");
+			throw new RaggedMazeException("\nThe maze is ragged");
 		}
 	}
 
+	/** 
+	 *  
+	 */
 	private void raggedMazeCheck() throws RaggedMazeException {
 		int size = tiles.get(0).size();
 		for (List row:tiles){
@@ -79,6 +93,9 @@ public class Maze{
 		}
 	}
 
+	/** 
+	 *  
+	 */
 	public Tile getAdjacentTile(Tile tile, Direction direction){
 		Maze.Coordinate currentCoord = this.getTileLocation(tile);
 		if (direction.equals(Direction.NORTH)) {
@@ -97,20 +114,32 @@ public class Maze{
 		return this.getTileAtLocation(newCoord);
 	}
 
+	/** 
+	 *  
+	 */
 	public Tile getEntrance()throws NoEntranceException {
 		if (entrance == null) throw new NoEntranceException("\nThere are no entrances in the maze");
 		return entrance;
 	}
 
+	/** 
+	 *  
+	 */
 	public Tile getExit()throws NoExitException {
 		if (exit == null) throw new NoExitException("\nThere are no exits in the maze");
 		return exit;
 	}
 
+	/** 
+	 *  
+	 */
 	public Tile getTileAtLocation(Coordinate coord){
 		return tiles.get(tiles.size()-1-coord.getY()).get(coord.getX());
 	}
 
+	/** 
+	 *  
+	 */
 	public Coordinate getTileLocation(Tile tile){
 		int x, y;
 		x = y = 0;
@@ -125,10 +154,16 @@ public class Maze{
 		return this.new Coordinate(x,y);
 	}
 
+	/** 
+	 *  
+	 */
 	public List<List<Tile>> getTiles(){
 		return tiles;
 	}
 
+	/** 
+	 *  
+	 */
 	private void setEntrance(Tile tile) throws MultipleEntranceException {
 		if (entrance == null){
 			entrance = tile;
@@ -137,6 +172,9 @@ public class Maze{
 		}
 	}
 
+	/** 
+	 *  
+	 */
 	private void setExit(Tile tile) throws MultipleExitException {
 		if (exit == null){
 			exit = tile;
@@ -145,6 +183,9 @@ public class Maze{
 		}
 	}
 
+	/** 
+	 *  
+	 */
 	public String toString(){
 		String result = "";
         for(int i = 0; i < tiles.size(); i++){
@@ -161,29 +202,46 @@ public class Maze{
         return result;
 	}
 
-
+	/** 
+	 *  
+	 */
 	public class Coordinate{
 		private int x;
 		private int y;
 
+		/** 
+		 *  
+		 */
 		public Coordinate(int x, int y){
 			this.x = x;
 			this.y = y;
 		}
 
+		/** 
+		 *  
+		 */
 		public int getX(){
 			return x;
 		}
 
+		/** 
+		 *  
+		 */
 		public int getY(){
 			return y;
 		}
 
+		/** 
+		 *  
+		 */
 		public String toString(){
 			return "(" + String.valueOf(x) + ", " + String.valueOf(y) + ")";
 		}
 	}
 
+	/** 
+	 *  
+	 */
 	public enum Direction{
 		NORTH, SOUTH, EAST, WEST;
 	}
