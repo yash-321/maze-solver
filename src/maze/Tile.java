@@ -1,6 +1,9 @@
 package maze;
 
-public class Tile{
+import java.util.*;
+import java.io.*;
+
+public class Tile implements Serializable {
 	private Type type;
 
 	private Tile(Type type){

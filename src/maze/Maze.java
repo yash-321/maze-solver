@@ -1,17 +1,14 @@
 package maze;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.io.*;
+
 
 /** Class used to store the maze as a 2d arraylist of tiles
  *  @author Yashpal Sangha
  *  @version 29th April 2020
  */
-public class Maze{
+public class Maze implements Serializable {
 	// attributes
 	private Tile entrance = null;
 	private Tile exit = null;
@@ -27,7 +24,7 @@ public class Maze{
 	 *  @param 	file: The path of the file containing the maze
 	 *  @return Returns the maze object that was made from the text file
 	 */
-	public static Maze fromTxt(String file) throws InvalidMazeException, NoEntranceException, NoExitException, RaggedMazeException{
+	public static Maze fromTxt(String file) throws InvalidMazeException, IOException, MultipleEntranceException, MultipleExitException, NoEntranceException, NoExitException, RaggedMazeException, FileNotFoundException{
 		String line;
 		Maze maze = new Maze();
 		try(
@@ -59,16 +56,16 @@ public class Maze{
 		
 		}catch(FileNotFoundException e) {
 			System.out.println("\nNo file was read");
-			throw new InvalidMazeException("\nNo file was read");
+			throw new FileNotFoundException("No file was read");
 		}catch(IOException e) {
 			System.out.println("\nThere was a problem reading the file");
-			throw new InvalidMazeException("\nThere was a problem reading the file");
+			throw new IOException("There was a problem reading the file");
 		}catch(MultipleEntranceException e) {
 			System.out.println("\nThere are multiple entrances in the maze");
-			throw new InvalidMazeException("\nThere are multiple entrances in the maze");
+			throw new MultipleEntranceException("\nThere are multiple entrances in the maze");
 		}catch(MultipleExitException e) {
 			System.out.println("\nThere are multiple exits in the maze");
-			throw new InvalidMazeException("\nThere are multiple exits in the maze");
+			throw new MultipleExitException("\nThere are multiple exits in the maze");
 		}catch(NoEntranceException e) {
 			System.out.println("\nThere are no entrances in the maze");
 			throw new NoEntranceException("\nThere are no entrances in the maze");

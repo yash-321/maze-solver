@@ -2,9 +2,9 @@ package maze.routing;
 
 import maze.*;
 import java.util.*;
+import java.io.*;
 
-
-public class RouteFinder{
+public class RouteFinder implements Serializable {
 	private Maze maze;
 	private Stack<Tile> route = new Stack<Tile>();
 	private Boolean finished = false;
@@ -28,20 +28,45 @@ public class RouteFinder{
 		return route;
 	}
 
-	public boolean isFinished() {
-		try{
-			if (route.peek() == maze.getExit()){
-				return true;
-			}
-		}catch(NoExitException e) {
-			System.out.println("\nThere are no exits in the maze");
-		}
-		return false;
+	public List<Tile> getVisited() {
+		return visited;
 	}
 
-	//public static RouteFinder load(String file) {}
+	public boolean isFinished() {
+		return finished;
+	}
 
-	//public void save(String file) {}
+	public static RouteFinder load(String file) throws FileNotFoundException, ClassNotFoundException {
+		RouteFinder load = null;
+		try {
+			FileInputStream myFileInputStream = new FileInputStream(file);
+		    ObjectInputStream myObjectInputStream = new ObjectInputStream(myFileInputStream);
+		    load = (RouteFinder) myObjectInputStream.readObject(); 
+		    myObjectInputStream.close();
+		    return load;
+		}
+		catch (IOException e) {
+		    System.out.println("Error when loading file.");
+		    throw new FileNotFoundException("File not found");
+		} 
+		catch (ClassNotFoundException c) {
+        	System.out.println("RouteFinder class not found");
+        	throw new FileNotFoundException("RouteFinder class not found");
+     	}
+	}
+
+	public void save(String file) throws IOException {
+		try {
+		   FileOutputStream myFileOutputStream = new FileOutputStream(file);
+		   ObjectOutputStream myObjectOutputStream = new ObjectOutputStream(myFileOutputStream);
+		   myObjectOutputStream.writeObject(this);
+		   myObjectOutputStream.close();
+		}
+		catch (IOException e) {
+		    System.out.println("Error when saving to file. " + e);
+		    throw new IOException("Error when saving to file.");
+		}
+	}
 
 	public boolean step() throws NoRouteFoundException {
 		if (!finished) {
@@ -50,7 +75,8 @@ public class RouteFinder{
 				&& !visited.contains(maze.getAdjacentTile(route.peek(), Maze.Direction.EAST))) {
 				if (route.search(maze.getAdjacentTile(route.peek(), Maze.Direction.EAST)) == -1){
 					route.push(maze.getAdjacentTile(route.peek(), Maze.Direction.EAST));
-					if (this.isFinished()){
+					if (route.peek().getType().equals(Tile.Type.EXIT)){
+						finished = true;
 						return true;
 					} else{
 						return false;
@@ -62,7 +88,8 @@ public class RouteFinder{
 				&& !visited.contains(maze.getAdjacentTile(route.peek(), Maze.Direction.SOUTH))) {
 				if (route.search(maze.getAdjacentTile(route.peek(), Maze.Direction.SOUTH)) == -1){
 					route.push(maze.getAdjacentTile(route.peek(), Maze.Direction.SOUTH));
-					if (this.isFinished()){
+					if (route.peek().getType().equals(Tile.Type.EXIT)){
+						finished = true;
 						return true;
 					} else{
 						return false;
@@ -74,7 +101,8 @@ public class RouteFinder{
 				&& !visited.contains(maze.getAdjacentTile(route.peek(), Maze.Direction.WEST))) {
 				if (route.search(maze.getAdjacentTile(route.peek(), Maze.Direction.WEST)) == -1){
 					route.push(maze.getAdjacentTile(route.peek(), Maze.Direction.WEST));
-					if (this.isFinished()){
+					if (route.peek().getType().equals(Tile.Type.EXIT)){
+						finished = true;
 						return true;
 					} else{
 						return false;
@@ -86,19 +114,16 @@ public class RouteFinder{
 				&& !visited.contains(maze.getAdjacentTile(route.peek(), Maze.Direction.NORTH))) {
 				if (route.search(maze.getAdjacentTile(route.peek(), Maze.Direction.NORTH)) == -1){
 					route.push(maze.getAdjacentTile(route.peek(), Maze.Direction.NORTH));
-					if (this.isFinished()){
+					if (route.peek().getType().equals(Tile.Type.EXIT)){
+						finished = true;
 						return true;
 					} else{
 						return false;
 					}
 				}
 			}
-			try{
-				if (route.peek() == maze.getEntrance()){
-					throw new NoRouteFoundException("No route found");
-				}
-			}catch(NoEntranceException e) {
-				System.out.println("\nThere is no entrance to the maze");
+			if (route.peek().getType().equals(Tile.Type.ENTRANCE)){
+				throw new NoRouteFoundException("No route found");
 			}
 			visited.add(route.pop());
 			return false;
