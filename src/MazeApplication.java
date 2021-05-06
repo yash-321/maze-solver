@@ -64,7 +64,7 @@ public class MazeApplication extends Application {
 			hb3.setSpacing(20);
 
 			// Vbox for maze
-			double x = 500;
+			double x = 600;
 			double sqr = x/solver.getMaze().getTiles().get(0).size();
 			double y = sqr*solver.getMaze().getTiles().size() + 200;
 			mazeGrid = DisplayMaze.go(solver);
@@ -124,6 +124,9 @@ public class MazeApplication extends Application {
 				if (mazeUpdate != null) {
 					mazeBox.getChildren().clear();
 					mazeBox.getChildren().addAll(mazeUpdate, step);
+				} else{
+					step.setVisible(false);
+					mazeBox.getChildren().add(new Label("The maze cannot be solved!"));
 				}
 				if (solver.isFinished()) {
 					step.setVisible(false);

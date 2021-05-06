@@ -21,7 +21,7 @@ import javafx.scene.shape.Rectangle;
 public class DisplayMaze {
 	
 	public static GridPane go(RouteFinder solver) {
-		double x = 500;
+		double x = 600;
 		double sqr = x/solver.getMaze().getTiles().get(0).size();
 		GridPane mazeGrid = new GridPane();
 		for(int i = 0; i < solver.getMaze().getTiles().size(); i++) {
